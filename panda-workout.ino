@@ -60,21 +60,38 @@ void setup()
 void pressKey(int key)
 {
   switch (key) {
-    case K_DOWN   : Keyboard.println("DOWN");   break;
-    case K_LEFT   : Keyboard.println("LEFT");   break;
-    case K_RIGHT  : Keyboard.println("RIGHT");  break;
-    case K_PLAY   : Keyboard.println("PLAY");   break;
-    case K_UP     : Keyboard.println("UP");     break;
-    case K_ESC    : Keyboard.println("ESC");    break;
-    case K_RET    : Keyboard.println("RET");    break;
-    case K_PG_DN  : Keyboard.println("PG_DN");  break;
-    case K_PG_UP  : Keyboard.println("PG_UP");  break;
-    case K_VOL_DN : Keyboard.println("VOL_DN"); break;
-    case K_VOL_UP : Keyboard.println("VOL_UP"); break;
-    case K_PWR    : Keyboard.println("PWR");    break;
+    case K_UP     : Keyboard.press(KEY_UP);               break;
+    case K_DOWN   : Keyboard.press(KEY_DOWN);             break;
+    case K_LEFT   : Keyboard.press(KEY_LEFT);             break;
+    case K_RIGHT  : Keyboard.press(KEY_RIGHT);            break;
+    case K_PLAY   : Keyboard.press(KEY_SPACE);            break;  // NOTE: Video players use space to start/stop playback
+    case K_ESC    : Keyboard.press(KEY_ESC);              break;
+    case K_RET    : Keyboard.press(KEY_ENTER);            break;
+    case K_PG_DN  : Keyboard.press(KEY_PAGE_DOWN);        break;
+    case K_PG_UP  : Keyboard.press(KEY_PAGE_UP);          break;
+    case K_VOL_DN : Keyboard.press(KEY_MEDIA_VOLUME_DEC); break;
+    case K_VOL_UP : Keyboard.press(KEY_MEDIA_VOLUME_INC); break;
+    case K_PWR    : Keyboard.press(KEY_SYSTEM_WAKE_UP);   break;
   }
 }
 
+void releaseKey(int key)
+{
+  switch (key) {
+    case K_UP     : Keyboard.release(KEY_UP);               break;
+    case K_DOWN   : Keyboard.release(KEY_DOWN);             break;
+    case K_LEFT   : Keyboard.release(KEY_LEFT);             break;
+    case K_RIGHT  : Keyboard.release(KEY_RIGHT);            break;
+    case K_PLAY   : Keyboard.release(KEY_SPACE);            break;
+    case K_ESC    : Keyboard.release(KEY_ESC);              break;
+    case K_RET    : Keyboard.release(KEY_ENTER);            break;
+    case K_PG_DN  : Keyboard.release(KEY_PAGE_DOWN);        break;
+    case K_PG_UP  : Keyboard.release(KEY_PAGE_UP);          break;
+    case K_VOL_DN : Keyboard.release(KEY_MEDIA_VOLUME_DEC); break;
+    case K_VOL_UP : Keyboard.release(KEY_MEDIA_VOLUME_INC); break;
+    case K_PWR    : Keyboard.release(KEY_SYSTEM_WAKE_UP);   break;
+  }
+}
 
 void loop()
 {
@@ -82,8 +99,11 @@ void loop()
     int state = digitalRead(i);
     if (state == LOW && pinStates[i] == HIGH) {
       pressKey(i);
+    } else if (state == HIGH && pinStates[i] == LOW) {
+      releaseKey(i);
     }
     pinStates[i] = state;
   }
+  // TODO: add bounce support
   delay(50);
 }
