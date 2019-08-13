@@ -27,77 +27,63 @@
 
 #include "Keyboard.h"
 
-// use this option for OSX.
-// Comment it out if using Windows or Linux:
-char ctrlKey = KEY_LEFT_GUI;
-// use this option for Windows and Linux.
-// leave commented out if using OSX:
-//  char ctrlKey = KEY_LEFT_CTRL;
+
+#define KEY_COUNT 12
+
+/* NOTE: in the release PCB pins GND and UP are swapped */
+#define K_DOWN   0
+#define K_LEFT   1
+#define K_RIGHT  2
+#define K_PLAY   3
+#define K_UP     4
+#define K_RET    5
+#define K_ESC    6
+#define K_VOL_DN 7
+#define K_VOL_UP 8
+#define K_PG_DN  9
+#define K_PG_UP  10
+#define K_PWR    11
+
+int pinStates[KEY_COUNT];
 
 
-void setup() {
-  // make pin 2 an input and turn on the pull-up resistor so it goes high unless
-  // connected to ground:
-  pinMode(2, INPUT_PULLUP);
-  // initialize control over the keyboard:
+void setup()
+{
+  for (int i = 0; i < KEY_COUNT; i++) {
+    pinMode(i, INPUT_PULLUP);
+    pinStates[i] = digitalRead(i);
+  }
+
   Keyboard.begin();
 }
 
-void loop() {
-  while (digitalRead(2) == HIGH) {
-    // do nothing until pin 2 goes low
-    delay(500);
+void pressKey(int key)
+{
+  switch (key) {
+    case K_DOWN   : Keyboard.println("DOWN");   break;
+    case K_LEFT   : Keyboard.println("LEFT");   break;
+    case K_RIGHT  : Keyboard.println("RIGHT");  break;
+    case K_PLAY   : Keyboard.println("PLAY");   break;
+    case K_UP     : Keyboard.println("UP");     break;
+    case K_ESC    : Keyboard.println("ESC");    break;
+    case K_RET    : Keyboard.println("RET");    break;
+    case K_PG_DN  : Keyboard.println("PG_DN");  break;
+    case K_PG_UP  : Keyboard.println("PG_UP");  break;
+    case K_VOL_DN : Keyboard.println("VOL_DN"); break;
+    case K_VOL_UP : Keyboard.println("VOL_UP"); break;
+    case K_PWR    : Keyboard.println("PWR");    break;
   }
-  delay(1000);
-  // new document:
-  Keyboard.press(ctrlKey);
-  Keyboard.press('n');
-  delay(100);
-  Keyboard.releaseAll();
-  // wait for new window to open:
-  delay(1000);
+}
 
-  // versions of the Arduino IDE after 1.5 pre-populate new sketches with
-  // setup() and loop() functions let's clear the window before typing anything new
-  // select all
-  Keyboard.press(ctrlKey);
-  Keyboard.press('a');
-  delay(500);
-  Keyboard.releaseAll();
-  // delete the selected text
-  Keyboard.write(KEY_BACKSPACE);
-  delay(500);
 
-  // Type out "blink":
-  Keyboard.println("void setup() {");
-  Keyboard.println("pinMode(13, OUTPUT);");
-  Keyboard.println("}");
-  Keyboard.println();
-  Keyboard.println("void loop() {");
-  Keyboard.println("digitalWrite(13, HIGH);");
-  Keyboard.print("delay(3000);");
-  // 3000 ms is too long. Delete it:
-  for (int keystrokes = 0; keystrokes < 6; keystrokes++) {
-    delay(500);
-    Keyboard.write(KEY_BACKSPACE);
+void loop()
+{
+  for (int i = 0; i < KEY_COUNT; i++) {
+    int state = digitalRead(i);
+    if (state == LOW && pinStates[i] == HIGH) {
+      pressKey(i);
+    }
+    pinStates[i] = state;
   }
-  // make it 1000 instead:
-  Keyboard.println("1000);");
-  Keyboard.println("digitalWrite(13, LOW);");
-  Keyboard.println("delay(1000);");
-  Keyboard.println("}");
-  // tidy up:
-  Keyboard.press(ctrlKey);
-  Keyboard.press('t');
-  delay(100);
-  Keyboard.releaseAll();
-  delay(3000);
-  // upload code:
-  Keyboard.press(ctrlKey);
-  Keyboard.press('u');
-  delay(100);
-  Keyboard.releaseAll();
-
-  // wait for the sweet oblivion of reprogramming:
-  while (true);
+  delay(50);
 }
