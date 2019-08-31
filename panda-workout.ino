@@ -52,7 +52,7 @@ void pressKey(int pin)
     case K_PG_UP  : Keyboard.press(KEY_PAGE_UP);          break;
     case K_VOL_DN : Keyboard.press(KEY_MEDIA_VOLUME_DEC); break;
     case K_VOL_UP : Keyboard.press(KEY_MEDIA_VOLUME_INC); break;
-    case K_PWR    : Keyboard.press(KEY_SYSTEM_WAKE_UP);   break;
+    case K_PWR    : Keyboard.press(KEY_G);                break;
   }
   keyStableStates[pin] = LOW;
 }
@@ -71,7 +71,7 @@ void releaseKey(int pin)
     case K_PG_UP  : Keyboard.release(KEY_PAGE_UP);          break;
     case K_VOL_DN : Keyboard.release(KEY_MEDIA_VOLUME_DEC); break;
     case K_VOL_UP : Keyboard.release(KEY_MEDIA_VOLUME_INC); break;
-    case K_PWR    : Keyboard.release(KEY_SYSTEM_WAKE_UP);   break;
+    case K_PWR    : Keyboard.release(KEY_G);                break;
   }
   keyStableStates[pin] = HIGH;
 }
